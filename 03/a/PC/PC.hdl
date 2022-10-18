@@ -1,0 +1,106 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/a/PC.hdl
+
+/**
+ * A 16-bit counter with load and reset control bits.
+ * if      (reset[t] == 1) out[t+1] = 0
+ * else if (load[t] == 1)  out[t+1] = in[t]
+ * else if (inc[t] == 1)   out[t+1] = out[t] + 1  (integer addition)
+ * else                    out[t+1] = out[t]
+ */
+
+CHIP PC {
+    IN in[16],load,inc,reset;
+    OUT out[16];
+
+    PARTS:
+    Mux16(
+        a[0..15]=ifInc,
+        b[0..15]=in[0..15], 
+        sel=load, 
+        out[0..15]=ifLoad
+    );
+
+    Mux16(
+        a=ifLoad, 
+        b[0..15]=false, 
+        sel=reset, 
+        out[0]=inDff0,
+        out[1]=inDff1,
+        out[2]=inDff2,
+        out[3]=inDff3,
+        out[4]=inDff4,
+        out[5]=inDff5,
+        out[6]=inDff6,
+        out[7]=inDff7,
+        out[8]=inDff8,
+        out[9]=inDff9,
+        out[10]=inDff10,
+        out[11]=inDff11,
+        out[12]=inDff12,
+        out[13]=inDff13,
+        out[14]=inDff14,
+        out[15]=inDff15
+    );
+    
+    DFF(in=inDff0, out=outDff0, out=out[0]);
+    DFF(in=inDff1, out=outDff1, out=out[1]);
+    DFF(in=inDff2, out=outDff2, out=out[2]);
+    DFF(in=inDff3, out=outDff3, out=out[3]);
+    DFF(in=inDff4, out=outDff4, out=out[4]);
+    DFF(in=inDff5, out=outDff5, out=out[5]);
+    DFF(in=inDff6, out=outDff6, out=out[6]);
+    DFF(in=inDff7, out=outDff7, out=out[7]);
+    DFF(in=inDff8, out=outDff8, out=out[8]);
+    DFF(in=inDff9, out=outDff9, out=out[9]);
+    DFF(in=inDff10, out=outDff10, out=out[10]);
+    DFF(in=inDff11, out=outDff11, out=out[11]);
+    DFF(in=inDff12, out=outDff12, out=out[12]);
+    DFF(in=inDff13, out=outDff13, out=out[13]);
+    DFF(in=inDff14, out=outDff14, out=out[14]);
+    DFF(in=inDff15, out=outDff15, out=out[15]);
+    
+    Inc16(
+        in[0]=outDff0,
+        in[1]=outDff1,
+        in[2]=outDff2,
+        in[3]=outDff3,
+        in[4]=outDff4,
+        in[5]=outDff5,
+        in[6]=outDff6,
+        in[7]=outDff7,
+        in[8]=outDff8,
+        in[9]=outDff9,
+        in[10]=outDff10,
+        in[11]=outDff11,
+        in[12]=outDff12,
+        in[13]=outDff13,
+        in[14]=outDff14,
+        in[15]=outDff15,  
+        out[0..15]=incAllDff
+    );
+
+    Mux16(
+        a[0]=outDff0,
+        a[1]=outDff1,
+        a[2]=outDff2,
+        a[3]=outDff3,
+        a[4]=outDff4,
+        a[5]=outDff5,
+        a[6]=outDff6,
+        a[7]=outDff7,
+        a[8]=outDff8,
+        a[9]=outDff9,
+        a[10]=outDff10,
+        a[11]=outDff11,
+        a[12]=outDff12,
+        a[13]=outDff13,
+        a[14]=outDff14,
+        a[15]=outDff15,  
+        b[0..15]=incAllDff, 
+        sel=inc, 
+        out[0..15]=ifInc
+    );
+}

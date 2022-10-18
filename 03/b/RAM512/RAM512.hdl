@@ -1,0 +1,52 @@
+// This file is part of the materials accompanying the book 
+// "The Elements of Computing Systems" by Nisan and Schocken, 
+// MIT Press. Book site: www.idc.ac.il/tecs
+// File name: projects/03/b/RAM512.hdl
+
+/**
+ * Memory of 512 registers, each 16 bit-wide. Out holds the value
+ * stored at the memory location specified by address. If load==1, then 
+ * the in value is loaded into the memory location specified by address 
+ * (the loaded value will be emitted to out from the next time step onward).
+ */
+
+CHIP RAM512 {
+    IN in[16], load, address[9];
+    OUT out[16];
+
+    PARTS:
+    DMux8Way(
+        in=load, 
+        sel[0..2]=address[6..8], 
+        a=toLoadRAM640, 
+        b=toLoadRAM641, 
+        c=toLoadRAM642, 
+        d=toLoadRAM643, 
+        e=toLoadRAM644, 
+        f=toLoadRAM645, 
+        g=toLoadRAM646, 
+        h=toLoadRAM647
+    );
+    
+    RAM64(in[0..15]=in[0..15], load=toLoadRAM640, address[0..5]=address[0..5], out[0..15]=outRAM640);
+    RAM64(in[0..15]=in[0..15], load=toLoadRAM641, address[0..5]=address[0..5], out[0..15]=outRAM641);
+    RAM64(in[0..15]=in[0..15], load=toLoadRAM642, address[0..5]=address[0..5], out[0..15]=outRAM642);
+    RAM64(in[0..15]=in[0..15], load=toLoadRAM643, address[0..5]=address[0..5], out[0..15]=outRAM643);
+    RAM64(in[0..15]=in[0..15], load=toLoadRAM644, address[0..5]=address[0..5], out[0..15]=outRAM644);
+    RAM64(in[0..15]=in[0..15], load=toLoadRAM645, address[0..5]=address[0..5], out[0..15]=outRAM645);
+    RAM64(in[0..15]=in[0..15], load=toLoadRAM646, address[0..5]=address[0..5], out[0..15]=outRAM646);
+    RAM64(in[0..15]=in[0..15], load=toLoadRAM647, address[0..5]=address[0..5], out[0..15]=outRAM647);
+    
+    Mux8Way16(
+        a[0..15]=outRAM640, 
+        b[0..15]=outRAM641, 
+        c[0..15]=outRAM642, 
+        d[0..15]=outRAM643, 
+        e[0..15]=outRAM644, 
+        f[0..15]=outRAM645, 
+        g[0..15]=outRAM646, 
+        h[0..15]=outRAM647, 
+        sel[0..2]=address[6..8], 
+        out[0..15]=out[0..15]
+    );
+}

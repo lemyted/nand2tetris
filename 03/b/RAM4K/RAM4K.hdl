@@ -1,0 +1,53 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/b/RAM4K.hdl
+
+/**
+ * Memory of 4K registers, each 16 bit-wide. Out holds the value
+ * stored at the memory location specified by address. If load==1, then 
+ * the in value is loaded into the memory location specified by address 
+ * (the loaded value will be emitted to out from the next time step onward).
+ */
+
+CHIP RAM4K {
+    IN in[16], load, address[12];
+    OUT out[16];
+
+    PARTS:
+    DMux8Way(
+        in=load, 
+        sel[0..2]=address[9..11], 
+        a=toLoadRAM5120, 
+        b=toLoadRAM5121, 
+        c=toLoadRAM5122, 
+        d=toLoadRAM5123, 
+        e=toLoadRAM5124, 
+        f=toLoadRAM5125, 
+        g=toLoadRAM5126, 
+        h=toLoadRAM5127
+    );
+    
+    RAM512(in[0..15]=in[0..15], load=toLoadRAM5120, address[0..8]=address[0..8], out[0..15]=outRAM5120);
+    RAM512(in[0..15]=in[0..15], load=toLoadRAM5121, address[0..8]=address[0..8], out[0..15]=outRAM5121);
+    RAM512(in[0..15]=in[0..15], load=toLoadRAM5122, address[0..8]=address[0..8], out[0..15]=outRAM5122);
+    RAM512(in[0..15]=in[0..15], load=toLoadRAM5123, address[0..8]=address[0..8], out[0..15]=outRAM5123);
+    RAM512(in[0..15]=in[0..15], load=toLoadRAM5124, address[0..8]=address[0..8], out[0..15]=outRAM5124);
+    RAM512(in[0..15]=in[0..15], load=toLoadRAM5125, address[0..8]=address[0..8], out[0..15]=outRAM5125);
+    RAM512(in[0..15]=in[0..15], load=toLoadRAM5126, address[0..8]=address[0..8], out[0..15]=outRAM5126);
+    RAM512(in[0..15]=in[0..15], load=toLoadRAM5127, address[0..8]=address[0..8], out[0..15]=outRAM5127);
+    
+    Mux8Way16(
+        a[0..15]=outRAM5120, 
+        b[0..15]=outRAM5121, 
+        c[0..15]=outRAM5122, 
+        d[0..15]=outRAM5123, 
+        e[0..15]=outRAM5124, 
+        f[0..15]=outRAM5125, 
+        g[0..15]=outRAM5126, 
+        h[0..15]=outRAM5127, 
+        sel[0..2]=address[9..11], 
+        out[0..15]=out[0..15]
+    );
+    
+}

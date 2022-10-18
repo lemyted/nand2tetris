@@ -1,0 +1,52 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/03/b/RAM16K.hdl
+
+/**
+ * Memory of 16K registers, each 16 bit-wide. Out holds the value
+ * stored at the memory location specified by address. If load==1, then 
+ * the in value is loaded into the memory location specified by address 
+ * (the loaded value will be emitted to out from the next time step onward).
+ */
+
+CHIP RAM16K {
+    IN in[16], load, address[14];
+    OUT out[16];
+
+    PARTS:
+    DMux8Way(
+        in=load, 
+        sel[0..2]=address[11..13], 
+        a=toLoadRAM4K0, 
+        b=toLoadRAM4K1, 
+        c=toLoadRAM4K2, 
+        d=toLoadRAM4K3, 
+        e=toLoadRAM4K4, 
+        f=toLoadRAM4K5, 
+        g=toLoadRAM4K6, 
+        h=toLoadRAM4K7
+    );
+    
+    RAM4K(in[0..15]=in[0..15], load=toLoadRAM4K0, address[0..10]=address[0..10], out[0..15]=outRAM4K0);
+    RAM4K(in[0..15]=in[0..15], load=toLoadRAM4K1, address[0..10]=address[0..10], out[0..15]=outRAM4K1);
+    RAM4K(in[0..15]=in[0..15], load=toLoadRAM4K2, address[0..10]=address[0..10], out[0..15]=outRAM4K2);
+    RAM4K(in[0..15]=in[0..15], load=toLoadRAM4K3, address[0..10]=address[0..10], out[0..15]=outRAM4K3);
+    RAM4K(in[0..15]=in[0..15], load=toLoadRAM4K4, address[0..10]=address[0..10], out[0..15]=outRAM4K4);
+    RAM4K(in[0..15]=in[0..15], load=toLoadRAM4K5, address[0..10]=address[0..10], out[0..15]=outRAM4K5);
+    RAM4K(in[0..15]=in[0..15], load=toLoadRAM4K6, address[0..10]=address[0..10], out[0..15]=outRAM4K6);
+    RAM4K(in[0..15]=in[0..15], load=toLoadRAM4K7, address[0..10]=address[0..10], out[0..15]=outRAM4K7);
+    
+    Mux8Way16(
+        a[0..15]=outRAM4K0, 
+        b[0..15]=outRAM4K1, 
+        c[0..15]=outRAM4K2, 
+        d[0..15]=outRAM4K3, 
+        e[0..15]=outRAM4K4, 
+        f[0..15]=outRAM4K5, 
+        g[0..15]=outRAM4K6, 
+        h[0..15]=outRAM4K7, 
+        sel[0..2]=address[11..13], 
+        out[0..15]=out[0..15]
+    );
+}
